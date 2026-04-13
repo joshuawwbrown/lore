@@ -68,6 +68,7 @@ begins.
     lore/VERSION                          - current lore version string
     lore/LORE.md                          - documentation pipeline reference
     lore/LORE_UPDATE.md                   - instructions for updating lore to latest version
+    lore/MODIFYING_LORE.md                - instructions for making local modifications to lore
     lore/PLAN.md                          - development plan pipeline reference
     lore/CONCEPTS.md                      - glossary and terminology for LORE
     lore/SCHEMAS.md                       - work file schemas (single source of truth)
