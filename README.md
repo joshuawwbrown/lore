@@ -15,6 +15,28 @@ Open a new AI session and say:
 
 ---
 
+## Installing Lore into a Project
+
+To install lore into a project from the public repository, open a new AI
+session in your project and say:
+
+    Clone https://github.com/joshuawwbrown/lore.git to a temporary location,
+    copy the contents into a new lore/ directory at the root of this project,
+    then delete the temporary clone. Report what was copied.
+
+---
+
+## Updating Lore
+
+If lore is already installed in your project, share this file with your AI
+assistant and say:
+
+    Please follow `lore/LORE_UPDATE.md` to update lore.
+
+A human with a terminal can also follow `lore/LORE_UPDATE.md` directly.
+
+---
+
 ## What it does
 
 LORE reads every source file in the project and produces human-facing and
@@ -31,7 +53,9 @@ begins.
 ## Files in this directory
 
     lore/README.md                        - this file (human-facing)
+    lore/VERSION                          - current lore version string
     lore/LORE.md                          - documentation pipeline reference
+    lore/LORE_UPDATE.md                   - instructions for updating lore to latest version
     lore/PLAN.md                          - development plan pipeline reference
     lore/CONCEPTS.md                      - glossary and terminology for LORE
     lore/SCHEMAS.md                       - work file schemas (single source of truth)
