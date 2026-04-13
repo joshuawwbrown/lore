@@ -26,6 +26,18 @@ session in your project and say:
 
 ---
 
+## Updating from a Pre-Repository Version of Lore
+
+If lore is already installed in your project but predates the public repository
+(there is no `lore/VERSION` file), open a new AI session in your project and say:
+
+    Clone https://github.com/joshuawwbrown/lore.git to a temporary location,
+    copy the contents into the existing lore/ directory at the root of this project,
+    overwriting any files that already exist, then delete the temporary clone.
+    Report what was added or changed.
+
+---
+
 ## Updating Lore
 
 If lore is already installed in your project, share this file with your AI
