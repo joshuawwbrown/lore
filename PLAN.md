@@ -17,7 +17,7 @@ To continue an existing plan session, share this file and say:
 To continue implementing a plan that is already READY, share the spec file,
 the plan file, and this file with your AI assistant and say:
 
-    Please follow `docs/plans/PLAN_[label].md` and CONTINUE.
+    Please follow `docs/plans/PLAN_[label]_BLUEPRINT.md` and CONTINUE.
 
     The implementing agent will read the spec, the plan, and the current
     LORE_BRIEF.md before executing the next phase.
@@ -119,15 +119,15 @@ confirm they understand the risks. See PLAN_DRAFT stage, Step 4.
 # Step 1 - Detect Pipeline State
 
 Before doing anything else, check whether docs/plans/ exists and whether
-any PLAN_*.md files exist there.
+any PLAN_*_BLUEPRINT.md files exist there.
 
-    IF docs/plans/ does not exist OR no PLAN_*.md files exist there:
+    IF docs/plans/ does not exist OR no PLAN_*_BLUEPRINT.md files exist there:
         Pipeline state: NEW
         Go to: MENU A - New Plan
 
-    IF docs/plans/ exists and PLAN_*.md files exist there:
+    IF docs/plans/ exists and PLAN_*_BLUEPRINT.md files exist there:
 
-        Read the status field from the header block of each PLAN_*.md file.
+        Read the status field from the header block of each PLAN_*_BLUEPRINT.md file.
         If the prompt named a specific plan file, read only that file.
         If multiple plan files exist and none was specified, present the list
         and ask the human which plan to work with before proceeding.
@@ -210,6 +210,7 @@ Q1. What is the nature of this change?
     [R] Replacing an existing subsystem
     [U] Upgrading a dependency or tool
     [F] Adding a new feature
+    [M] Modify or enhance an existing feature
     [G] General refactor or cleanup
     [T] Troubleshooting / bug fix
     [O] Other -- describe briefly
@@ -247,8 +248,8 @@ After receiving all answers:
     Derive a plan type from Q1 (one or more codes, comma-separated).
     Set plan label:    [label]
     Set spec filename: docs/plans/PLAN_[label]_SPEC.md
-    Set plan filename: docs/plans/PLAN_[label].md
-    Set journal filename: docs/plans/PLAN_[label]_journal_1.md
+    Set plan filename: docs/plans/PLAN_[label]_BLUEPRINT.md
+    Set journal filename: docs/plans/PLAN_[label]_JOURNAL_1.md
 
     Create docs/plans/ if it does not exist.
 
@@ -362,7 +363,7 @@ status:             DRAFT
 created:            [YYYY-MM-DD HH:MM]
 last_updated:       [YYYY-MM-DD HH:MM]
 brief_version:      [last_updated from LORE_BRIEF.md]
-plan_file:          docs/plans/PLAN_[label].md
+plan_file:          docs/plans/PLAN_[label]_BLUEPRINT.md
 amendment_count:    0
 
 ---
@@ -617,7 +618,7 @@ Present:
 
     To begin or continue implementation, start a new context window and say:
 
-        Please follow `docs/plans/PLAN_[label].md` and CONTINUE.
+        Please follow `docs/plans/PLAN_[label]_BLUEPRINT.md` and CONTINUE.
 
     The implementing agent will read this plan, read the current brief,
     check for brief version changes, and execute the next unchecked phase.
@@ -852,32 +853,24 @@ Do not leave a surface area blank without stating why it does not apply.
 		downstream system D receives message M", "run with feature flag
 		absent, confirm existing behavior is unchanged."
 
-Present the decomposition in this format:
+Work through the decomposition internally. Do not present the full
+structured decomposition to the human.
+
+When the decomposition is complete, present a short scope summary:
 
 ---
-CAPABILITY DECOMPOSITION
+SCOPE CONFIRMATION
 
-I have extracted the following capabilities from the spec (SPEC section 2).
-Please confirm this is complete before I write the plan. If anything is
-missing, wrong, or should be split differently, tell me now.
+Based on the spec, here is the scope of this plan:
 
-	Capability 1: [short name] (SPEC 2.A)
+	[2-4 bullet points naming the key capabilities and the main files
+	 or components affected. One line per capability. Be specific:
+	 name actual files and components from the project.]
 
-		Core behavior:       [description, or "none"]
-		Input surface:       [description and files, or "none"]
-		Output surface:      [description and files, or "none"]
-		Persistent storage:  [description, or "none"]
-		Operator tooling:    [description and components, or "none -- reason"]
-		Documentation:       [description and files, or "none -- reason"]
-		External:            [description, or "none"]
-		Testing:             [specific test cases]
+	Files that will change: [count]
+	Files that will NOT change: [list the most notable exclusions, or "none identified yet"]
 
-	Capability 2: [short name] (SPEC 2.B)
-		[same structure]
-
-	...
-
-Is this decomposition complete?
+Does this look right? Any capabilities missing or files that should be excluded?
 ---
 
 Wait for the human to respond.
@@ -885,8 +878,8 @@ Wait for the human to respond.
 	If the human confirms: proceed to Step 3.
 
 	If the human corrects or adds to the decomposition:
-		Update the decomposition.
-		Re-present the corrected version.
+		Update the internal decomposition.
+		Re-present the corrected scope summary.
 		Ask for confirmation again.
 		Do not proceed until the human confirms.
 
@@ -916,6 +909,12 @@ emphasis for every code present.
 	[F] Adding a new feature:
 		Emphasize: new file specifications, integration points with existing
 		subsystems, acceptance criteria for each new behavior.
+
+	[M] Modifying or enhancing an existing feature:
+		Emphasize: before/after behavior description, which existing components
+		change and how, what the user or operator experience looks like before
+		and after, and which behaviors or invariants must be preserved.
+		Flag any risk of unintended side effects on adjacent features.
 
 	[G] General refactor or cleanup:
 		Emphasize: before/after behavior equivalence, what must not change,
@@ -981,7 +980,7 @@ If Q3 answer was [Y] or [P]:
 
 ## Step 6 - Write the plan file
 
-Write the plan to docs/plans/PLAN_[label].md using the structure below.
+Write the plan to docs/plans/PLAN_[label]_BLUEPRINT.md using the structure below.
 Write every section. Do not skip sections -- use "N/A" with a reason if
 a section genuinely does not apply.
 
@@ -1002,7 +1001,7 @@ brief_version:      [last_updated from LORE_BRIEF.md]
 primers_read:       [comma-separated list of PRIMER filenames read]
 last_stage_completed: plan_draft
 spec_file:          docs/plans/PLAN_[label]_SPEC.md
-journal_file:       docs/plans/PLAN_[label]_journal_1.md
+journal_file:       docs/plans/PLAN_[label]_JOURNAL_1.md
 journal_line_count: 0
 plan_line_count:    [line count of this file]
 deployment_guide:   NO
@@ -1257,7 +1256,7 @@ Do not fill this in during drafting -- leave all fields as shown.]
     Phases complete: 0 of [N]
     Last phase done: none
     Last updated:    [created date]
-    Journal file:    docs/plans/PLAN_[label]_journal_1.md
+    Journal file:    docs/plans/PLAN_[label]_JOURNAL_1.md
     Journal entries: 0
 
 ---
@@ -1267,7 +1266,7 @@ END OF PLAN FILE STRUCTURE
 
 ## Step 6 - Write the initial journal entry
 
-Create docs/plans/PLAN_[label]_journal_1.md.
+Create docs/plans/PLAN_[label]_JOURNAL_1.md.
 
 Write the first journal entry using this format:
 
@@ -1534,10 +1533,12 @@ human a quick map of what will happen in what order.]
 
 ## Your decision
 
-Please read this proposal and the full plan if you wish:
-    docs/plans/PLAN_[label].md
+This proposal contains everything you need to approve or push back.
+The full blueprint is available at docs/plans/PLAN_[label]_BLUEPRINT.md
+if you want to read the complete file specifications -- but it is not
+required reading.
 
-Then respond with one of:
+Respond with one of:
 
     [A] Approved -- looks good, proceed to implementation
     [D] Approved + deployment guide -- proceed, and produce a human
@@ -1593,20 +1594,19 @@ Output the following to the human:
 ---
 PROPOSAL READY FOR REVIEW
 
-The proposal for plan [plan_label] has been written to:
     docs/plans/PLAN_[label]_PROPOSAL.md
 
-Read that file now. It contains everything you need to approve or push
-back on this plan: the goal, the files that will change, the constraints,
-any reference material that must be exact, known risks, and the phase
-summary. The full plan is available at docs/plans/PLAN_[label].md if
-you want to read the complete file specifications.
+Read the proposal above. It contains everything you need to make a
+decision: the goal, files that will change, constraints, reference
+material, known risks, and the implementation phase summary.
+
+The full blueprint is at docs/plans/PLAN_[label]_BLUEPRINT.md if you
+want to read the complete file specifications -- but the proposal is
+the required read. You should not need to open the blueprint to approve.
 
 Self-review result: [PASS | PASS_WITH_WARNINGS | FAIL_CORRECTED]
 [If PASS_WITH_WARNINGS:]
 Warnings noted: [list warnings one per line, indented]
-
-When you have read the proposal, respond with one of:
 
     [A] Approved -- looks good, proceed to implementation
     [D] Approved + deployment guide -- proceed, and produce a human
@@ -1636,7 +1636,7 @@ If [A]:
         Plan [plan_label] is approved and ready to implement.
 
         To begin implementation, start a new context window and say:
-            Please follow `docs/plans/PLAN_[label].md` and CONTINUE.
+            Please follow `docs/plans/PLAN_[label]_BLUEPRINT.md` and CONTINUE.
 
     Stop. Do not begin implementation in this context.
 
@@ -1669,7 +1669,7 @@ If [D]:
         A deployment runbook will be written when implementation is complete.
 
         To begin implementation, start a new context window and say:
-            Please follow `docs/plans/PLAN_[label].md` and CONTINUE.
+            Please follow `docs/plans/PLAN_[label]_BLUEPRINT.md` and CONTINUE.
 
     Stop. Do not begin implementation in this context.
 
@@ -1715,7 +1715,7 @@ At the start of every implementation context window:
        If the spec file does not exist, note this and proceed -- the plan
        was created before the spec step was introduced.
 
-    2. Read this plan file (docs/plans/PLAN_[label].md) in full.
+    2. Read this plan file (docs/plans/PLAN_[label]_BLUEPRINT.md) in full.
 
     3. Read the current docs/LORE_BRIEF.md.
 
@@ -1856,9 +1856,9 @@ journal file.
 
     If line count exceeds 400:
         Create a new journal file:
-            docs/plans/PLAN_[label]_journal_[N+1].md
+            docs/plans/PLAN_[label]_JOURNAL_[N+1].md
         Update the plan header:
-            journal_file: docs/plans/PLAN_[label]_journal_[N+1].md
+            journal_file: docs/plans/PLAN_[label]_JOURNAL_[N+1].md
             journal_line_count: 0
         Add a link to the old journal file in the plan header under a
         new field:
@@ -1961,7 +1961,7 @@ If deployment_guide is YES:
 
     plan_label:     [label]
     created:        [YYYY-MM-DD HH:MM]
-    plan_file:      docs/plans/PLAN_[label].md
+    plan_file:      docs/plans/PLAN_[label]_BLUEPRINT.md
     deploy_file:    docs/plans/PLAN_[label]_DEPLOY.md
     status:         DRAFT -- operator must review before use
 
@@ -2108,7 +2108,7 @@ Output to the human:
     To unblock: [what is needed]
 
     When the blocker is resolved, resume with:
-        Please follow `docs/plans/PLAN_[label].md` and CONTINUE.
+        Please follow `docs/plans/PLAN_[label]_BLUEPRINT.md` and CONTINUE.
 
 Stop.
 
@@ -2127,11 +2127,11 @@ Next phase: Phase [N+1] -- [phase name]
 Goal of next phase: [one sentence]
 
 Journal file: [current journal filename] ([line count] lines)
-Plan file: docs/plans/PLAN_[label].md ([line count] lines)
+Plan file: docs/plans/PLAN_[label]_BLUEPRINT.md ([line count] lines)
 
 To continue in a new context window:
 
-    Please follow `docs/plans/PLAN_[label].md` and CONTINUE.
+    Please follow `docs/plans/PLAN_[label]_BLUEPRINT.md` and CONTINUE.
 
 The implementing agent will read the plan, read the current brief,
 check for brief version changes, and execute Phase [N+1].

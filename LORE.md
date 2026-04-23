@@ -304,25 +304,73 @@ When the user responds:
             Output: "No file manifest found. A full re-scan is required."
             Go to: If F (below).
 
-        Read the mtime_available field from MANIFEST.md.
-        If mtime_available is NO:
-            Output: "MANIFEST.md was produced without mtime data. Falling back to git."
-            Check whether git is available by attempting: git --version
-            If git is available:
-                Ask the user: "I need to run git diff to detect changed files. OK? [yes/no]"
-                If yes: proceed using git diff output as the changed-files list.
-                If no:
-                    Output: "Cannot detect changes. Choose [F] for a full re-scan."
-                    Re-present MENU D.
-            If git is not available:
-                Output: "Neither mtime nor git is available. Choose [F] for a full re-scan."
-                Re-present MENU D.
+        Read the git_commit field from MANIFEST.md.
+        Read the sha256_available field from MANIFEST.md.
 
-        If mtime_available is YES:
-            Run: ls -la on each file listed in MANIFEST.md Files Read section.
-            Compare each file's current mtime against the mtime recorded in MANIFEST.md.
-            Build a changed-files list: all files whose current mtime is newer
-            than the recorded mtime, plus any files that no longer exist.
+        -- Step 1: git discovery (fast candidate detection) --
+
+        Check whether git is available by checking for a .git/ directory
+        in the project root.
+
+        If git is available:
+            Run: git status --short
+            Ask the user: "I need to run git status to detect changed files. OK? [yes/no]"
+            If yes:
+                Run: git status --short
+                Collect all files listed as modified, added, deleted, or untracked.
+                This is the initial candidate list.
+
+                If git_commit is recorded in MANIFEST.md:
+                    Ask the user: "I need to run git diff to check committed changes. OK? [yes/no]"
+                    If yes:
+                        Run: git diff [git_commit] HEAD --name-only
+                        Add any files listed to the candidate list (deduplicated).
+                        For each candidate, use commit messages from
+                        git log [git_commit]..HEAD -- [file] as context
+                        when reporting changed files to the user.
+                    If no:
+                        Note: committed changes since last analysis run may be missed.
+            If no:
+                Set candidate list to empty.
+                Note: git skipped by user. Proceeding to checksum-only detection.
+
+        If git is not available:
+            Set candidate list to all files listed in MANIFEST.md Files Read section.
+            Note: no git available. All manifest files will be checksum-verified.
+
+        -- Step 2: checksum confirmation --
+
+        Check whether sha256sum is available by attempting: sha256sum --version
+
+        If sha256sum is available and sha256_available is YES in MANIFEST.md:
+            Ask the user: "I need to run sha256sum to confirm changed files. OK? [yes/no]"
+            If yes:
+                For each file in the candidate list (or all manifest files if git
+                was unavailable or skipped):
+                    Run: sha256sum [filepath]
+                    Compare the result to the sha256 recorded in MANIFEST.md.
+                    If the hash matches: remove the file from the changed-files list
+                    (content is identical despite mtime or git status difference).
+                    If the hash differs or the file no longer exists: keep on list.
+                Build the final changed-files list from confirmed hash mismatches only.
+            If no:
+                Use the candidate list as-is for the changed-files list.
+
+        If sha256sum is not available:
+            Output: "sha256sum is not available on this system."
+            Output: "To enable precise change detection, install it:"
+            Output: "  macOS:   brew install coreutils"
+            Output: "  Linux:   sha256sum is included in coreutils (already installed)"
+            Output: "  Windows: available in Git Bash or WSL"
+            Output: "Falling back to git status / mtime detection without confirmation."
+            Use the candidate list as-is for the changed-files list.
+
+        If sha256sum is available but sha256_available is NO in MANIFEST.md:
+            Note: previous analysis run did not record checksums. Checksums cannot
+            be used for confirmation this run. Use the candidate list as-is.
+            Checksums will be recorded during this update run for future use.
+
+        -- Step 3: report and proceed --
 
         If the changed-files list is empty:
             Output: "No changed files detected since the last analysis run."
@@ -331,7 +379,10 @@ When the user responds:
 
         If the changed-files list is not empty:
             Output: "Changed files detected:"
-            List each changed file with its old and new mtime.
+            For each file: list the filepath, the recorded sha256 (or "none" if
+            not available), and the current sha256 (or "not checked").
+            If git commit messages are available for a file, show a one-line
+            summary of the most recent commit message touching that file.
             Output: "LORE will re-analyze these files and update affected documentation."
             Confirm: "Proceed? [yes/no]"
             If yes:

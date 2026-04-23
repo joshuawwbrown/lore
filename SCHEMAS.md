@@ -1,6 +1,6 @@
 # LORE Work File Schemas
 # Single source of truth for all inter-stage artifacts
-# Schema Version: 1.6
+# Schema Version: 1.7
 # All stage files reference this document. Do not define schemas elsewhere.
 
 ---
@@ -427,6 +427,22 @@ mtime_available: string
     to git-diff mode for change detection (with user confirmation) rather
     than attempting mtime comparison.
 
+git_commit: string
+    The git commit hash recorded at the time this manifest was last written.
+    Format: full 40-character SHA-1 hex string, or "none" if git was not
+    available or the project has no commits.
+    Stage 6 reads this field to run git diff [git_commit] HEAD when detecting
+    committed changes since the last analysis run.
+
+sha256_available: string
+    Whether sha256 checksums were recorded for files during this analysis run.
+    One of: YES | NO
+    Set to YES if sha256sum was available and checksums were computed and stored
+    in the Files Read section. Set to NO if sha256sum was unavailable or the
+    user declined the permission request.
+    Stage 6 reads this field to determine whether checksum confirmation is
+    possible for the current manifest.
+
 file_read_policy_applied: string
     Records which file read policy was used for this analysis pass.
     One of: STANDARD | HEAD_APPLIED
@@ -443,20 +459,23 @@ One entry per file. Updated after each analysis pass - entries for files
 re-read in a later pass overwrite the prior entry for that file.
 
 Format for each entry:
-    - [filepath]: mtime [YYYY-MM-DD HH:MM] | subsystem [name or "none"] | stage [2 | 2b | update]
+    - [filepath]: mtime [YYYY-MM-DD HH:MM] | sha256 [64-char hex or "none"] | subsystem [name or "none"] | stage [2 | 2b | update]
 
     filepath:   path relative to the project root
     mtime:      the file's last-modified time at the moment it was read,
                 obtained via bash ls -la or equivalent if available,
                 or "unknown" if mtime could not be read
+    sha256:     the sha256 checksum of the file at the time it was read,
+                computed via sha256sum if available and permitted,
+                or "none" if sha256sum was unavailable or user declined
     subsystem:  the subsystem this file was assigned to in ANALYSIS.md,
                 or "none" if it does not belong to a known subsystem
     stage:      which stage read this file
 
 Example:
-    - app/srvr/index.js: mtime 2024-11-01 14:23 | subsystem auth | stage 2
-    - app/config/default.js: mtime 2024-10-30 09:11 | subsystem none | stage 2
-    - app/srvr/payments.js: mtime 2024-11-03 16:45 | subsystem payments | stage 2b
+    - app/srvr/index.js: mtime 2024-11-01 14:23 | sha256 a3f1c2... | subsystem auth | stage 2
+    - app/config/default.js: mtime 2024-10-30 09:11 | sha256 none | subsystem none | stage 2
+    - app/srvr/payments.js: mtime 2024-11-03 16:45 | sha256 9b0e44... | subsystem payments | stage 2b
 
 ### Manual Overrides
 A list of corrections made via MENU D option [C] that were promoted to
@@ -598,6 +617,20 @@ Format:
     Changed files: [list of work files affected]
     Instructions:
         [file]: [DROP field X | ADD field Y with default Z | RENAME A to B | CONVERT format]
+
+## Migration: 1.6 -> 1.7
+    Date: see docs/.LORE/work/JOURNAL.md started field for run date
+    Changed files: MANIFEST.md
+    Instructions:
+        MANIFEST.md: ADD field git_commit after mtime_available field.
+            Set to the output of: git rev-parse HEAD
+            If git is not available or the project has no commits, set to "none".
+        MANIFEST.md: ADD field sha256_available after git_commit field.
+            Set to NO (checksums were not recorded in prior runs).
+        MANIFEST.md: UPDATE schema_version field value to 1.7.
+        MANIFEST.md: For each entry in Files Read section, ADD sha256 field
+            with value "none" (checksums were not available at prior analysis time).
+            New format: mtime [...] | sha256 none | subsystem [...] | stage [...]
 
 ## Migration: 1.5 -> 1.6
     Date: see docs/.LORE/work/JOURNAL.md started field for run date
