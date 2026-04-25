@@ -156,8 +156,8 @@ If you have modified a lore file locally and the public repository has also
 changed that file, LORE_UPDATE.md instructs the AI to flag it as a conflict
 and ask you how to proceed. Your local changes will not be silently overwritten.
 
-However, if lore/VERSION matches the public repository VERSION exactly,
-the update procedure concludes no update is needed and stops without
-inspecting individual files. For this reason, bumping lore/VERSION after
-every local change is essential - it ensures the update procedure will
-always do a full diff and surface conflicts rather than skipping silently.
+The update procedure always performs a full content diff regardless of whether
+lore/VERSION matches. The version comparison is informational only. Bumping
+lore/VERSION after every local change is still required - it signals to
+collaborators and AI agents that the local copy has diverged from the published
+release, and it will appear in the diff report as a changed file.

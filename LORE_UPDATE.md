@@ -11,8 +11,9 @@ It can be followed by an AI agent or by a human with a terminal.
 ## Before You Begin
 
 The lore/ directory contains a VERSION file. The public repository also
-contains a VERSION file. Compare them first. If they match, no update is
-needed.
+contains a VERSION file. Compare them to determine whether changes are
+expected. Even if they match, a full content diff is always performed -
+a version bump may have been missed.
 
 ---
 
@@ -28,12 +29,10 @@ needed.
 
 3.  Read TEMP/VERSION. Note the version string.
 
-4.  If the two version strings are identical, the update is already current.
-    Delete TEMP and stop.
+4.  Compare the two version strings and note whether they match or differ.
+    This is informational only. Always continue to step 5 regardless.
 
-        rm -rf TEMP
-
-5.  If the versions differ, produce a list of differences between
+5.  Produce a list of differences between
     TEMP/ and lore/ in this project:
 
     -   Files present in /tmp/lore-update/ that are missing from lore/
