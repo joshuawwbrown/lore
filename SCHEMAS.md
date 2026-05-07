@@ -128,9 +128,9 @@ Fields written as plain labeled lines:
     entry_points: [comma-separated list of entry point files]
     test_framework: [detected test framework, or "none detected"]
     git_available: [YES | NO]
-        YES - a .git/ directory was found and the user permitted git commands.
+        YES - git rev-parse --git-dir succeeded and the user permitted git commands.
               Git metadata was collected and appears in the Git Metadata section.
-        NO  - no .git/ directory found, or user declined git access.
+        NO  - git rev-parse --git-dir failed, or user declined git access.
               The Git Metadata section is omitted from this file.
 
 ### Dependency Summary

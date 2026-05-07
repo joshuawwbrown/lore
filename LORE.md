@@ -309,8 +309,11 @@ When the user responds:
 
         -- Step 1: git discovery (fast candidate detection) --
 
-        Check whether git is available by checking for a .git/ directory
-        in the project root.
+        Check whether git is available by running:
+            git rev-parse --git-dir
+        from the project root. If the command succeeds, git is available.
+        Do not rely on .git/ directory visibility - it may be hidden from
+        the file browser.
 
         If git is available:
             Run: git status --short

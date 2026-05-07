@@ -136,14 +136,17 @@ This step collects authorship and change history from git. It is optional.
 If git is unavailable or the user declines, set git_available to NO and skip
 all sub-steps. The pipeline continues normally without this data.
 
-Check whether a .git/ directory exists in the project root.
+Check whether git is available by running:
+    git rev-parse --git-dir
+from the project root. Do not rely on .git/ directory visibility - it may
+be hidden from the file browser.
 
-    If .git/ is NOT present:
+    If the command fails or errors:
         Set git_available: NO
         Record in SKELETON.md Project Identity: git_available: NO
         Skip the rest of this step.
 
-    If .git/ IS present:
+    If the command succeeds:
         Ask the user:
             "Git repository detected. I can read git history to add authorship
              information to the documentation. This requires running read-only

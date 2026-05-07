@@ -21,9 +21,12 @@ a version bump may have been missed.
 
 1.  Read lore/VERSION in this project. Note the version string.
 
-2.  Clone the public lore repository to a temporary location outside this
-    project. Use any path that is convenient and writable. The examples below
-    use TEMP as a placeholder for that location.
+2.  Before cloning, remove any pre-existing directory at the temp location
+    to ensure a clean clone:
+
+        rm -rf TEMP
+
+    Then clone the public lore repository:
 
         git clone https://github.com/joshuawwbrown/lore.git TEMP
 

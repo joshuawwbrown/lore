@@ -69,6 +69,7 @@ begins.
     lore/LORE.md                          - documentation pipeline reference
     lore/LORE_UPDATE.md                   - instructions for updating lore to latest version
     lore/MODIFYING_LORE.md                - instructions for making local modifications to lore
+    lore/START_SESSION.md                 - prompt template for starting an AI coding session
     lore/PLAN.md                          - development plan pipeline reference
     lore/CONCEPTS.md                      - glossary and terminology for LORE
     lore/SCHEMAS.md                       - work file schemas (single source of truth)
@@ -154,9 +155,10 @@ See lore/PLAN.md for full pipeline documentation.
 
 ## Starting an AI development session
 
-After the pipeline has run, share `docs/LORE_BRIEF.md` with your AI assistant
-at the start of each development session. The AI will read the listed documents
-and confirm with `ALL DOCUMENTATION INGESTED` when ready to begin work.
+After the pipeline has run, open a new AI coding session, attach
+`docs/LORE_BRIEF.md`, and paste the prompt from `lore/START_SESSION.md`.
+The AI will read the listed documents and confirm with `ALL DOCUMENTATION
+INGESTED` when ready to begin work.
 
 ---
 

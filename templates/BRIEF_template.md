@@ -9,16 +9,6 @@
 
 ---
 
-READING INSTRUCTIONS: If you are an AI assistant reading this file, reply with
-exactly these 4 words when you have finished reading it and completed the
-reading sequence below: ALL DOCUMENTATION INGESTED
-
-Do not summarize, narrate, or explain. Do not respond until you have finished
-the full reading sequence. If you encounter an error or inconsistency in any
-document, note it briefly and continue reading.
-
----
-
 # Project Brief - [project_name]
 
 generated_by: LORE stage_7_brief.md
@@ -150,20 +140,10 @@ stop and report before continuing. Do not silently expand scope.
 
 # reading sequence
 
-Read the following documents now, in this order, before beginning any work.
-Do not skip documents. Do not reorder them.
-
 [For each document in the reading sequence from stage 7 Step 2, one numbered entry:]
 
     [N]. [filepath]
          [one-line description of what this document contains and why it matters]
-
-After reading all [count] documents above, respond with exactly:
-
-    ALL DOCUMENTATION INGESTED
-
-Nothing else. No summary. No commentary. If you encountered an error or
-inconsistency in any document, note it on the line before the acknowledgement.
 
 ---
 
